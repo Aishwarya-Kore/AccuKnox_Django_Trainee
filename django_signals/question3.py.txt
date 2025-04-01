@@ -1,0 +1,14 @@
+
+from django.db import models, transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class MyModel(models.Model):
+    name = models.CharField(max_length=100)
+
+class Log(models.Model):
+    message = models.CharField(max_length=200)
+
+@receiver(post_save, sender=MyModel)
+def my_signal_handler(sender, instance, **kwargs):
+    Log.objects.create(message=f"Created MyModel: {instance.name}")
